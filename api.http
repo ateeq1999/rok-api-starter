@@ -1,0 +1,74 @@
+@baseUrl = http://localhost:3000
+@accessToken = {{auth_login.response.body.access_token}}
+@refreshToken = {{auth_login.response.body.refresh_token}}
+
+
+### Register a new user
+# @name auth_register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "password_confirmation": "password123"
+}
+
+###
+
+### Login and get tokens
+# @name auth_login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+### Logout and get tokens
+# @name auth_logout
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+### Refresh access token (use refresh_token from login response)
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refresh_token": "{{refreshToken}}"
+}
+
+###
+
+### Get current user info (requires access_token)
+GET {{baseUrl}}/me
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Admin only endpoint (requires admin role)
+GET {{baseUrl}}/admin
+Authorization: Bearer {{accessToken}}
+
+###
+
+### Moderator only endpoint (requires moderator role)
+GET {{baseUrl}}/mod
+Authorization: Bearer {{accessToken}}
+
+###
+
+### API KEYS
+# @name api_keys
+GET {{baseUrl}}/api/v1/keys
+Authorization: Bearer {{accessToken}}
