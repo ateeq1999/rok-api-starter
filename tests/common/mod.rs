@@ -7,6 +7,7 @@ use rok_api_test::config::DatabaseConfig;
 use rok_api_test::routes::{api_router, auth_router};
 use rok_api_test::state::AppState;
 
+#[allow(dead_code)]
 pub struct TestApp {
     pub client: TestClient,
 }

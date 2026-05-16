@@ -1,6 +1,5 @@
 @baseUrl = http://localhost:3000
-@accessToken = {{auth_login.response.body.access_token}}
-@refreshToken = {{auth_login.response.body.refresh_token}}
+@token = {{auth_login.response.body.token}}
 
 
 ### Register a new user
@@ -14,9 +13,8 @@ Content-Type: application/json
   "password_confirmation": "password123"
 }
 
-###
 
-### Login and get tokens
+### Login
 # @name auth_login
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
@@ -26,49 +24,81 @@ Content-Type: application/json
   "password": "password123"
 }
 
-###
 
-### Logout and get tokens
-# @name auth_logout
+### Get current user profile
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+
+### Logout
 POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}
+
+
+### Request password reset
+POST {{baseUrl}}/auth/forgot-password
 Content-Type: application/json
 
 {
-  "email": "test@example.com",
+  "email": "test@example.com"
+}
+
+
+### Reset password
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "reset-token-from-email",
+  "password": "newpassword123",
+  "password_confirmation": "newpassword123"
+}
+
+
+### Request magic link
+POST {{baseUrl}}/auth/magic-link
+Content-Type: application/json
+
+{
+  "email": "test@example.com"
+}
+
+
+### Magic link callback (replace token)
+GET {{baseUrl}}/auth/magic-link/callback?token=your-magic-link-token
+
+
+### List all users (admin)
+GET {{baseUrl}}/api/v1/users
+Authorization: Bearer {{token}}
+
+
+### Create user (admin)
+POST {{baseUrl}}/api/v1/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com",
   "password": "password123"
 }
 
-###
 
-### Refresh access token (use refresh_token from login response)
-POST {{baseUrl}}/auth/refresh
+### Get user by ID
+GET {{baseUrl}}/api/v1/users/1
+Authorization: Bearer {{token}}
+
+
+### Update user email
+PUT {{baseUrl}}/api/v1/users/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "refresh_token": "{{refreshToken}}"
+  "email": "updated@example.com"
 }
 
-###
 
-### Get current user info (requires access_token)
-GET {{baseUrl}}/me
-Authorization: Bearer {{accessToken}}
-
-###
-
-### Admin only endpoint (requires admin role)
-GET {{baseUrl}}/admin
-Authorization: Bearer {{accessToken}}
-
-###
-
-### Moderator only endpoint (requires moderator role)
-GET {{baseUrl}}/mod
-Authorization: Bearer {{accessToken}}
-
-###
-
-### API KEYS
-# @name api_keys
-GET {{baseUrl}}/api/v1/keys
-Authorization: Bearer {{accessToken}}
+### Delete user
+DELETE {{baseUrl}}/api/v1/users/1
+Authorization: Bearer {{token}}
