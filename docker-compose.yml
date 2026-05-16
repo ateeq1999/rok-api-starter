@@ -1,18 +1,47 @@
 name: rok-api
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: rok-api-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rok_api_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   app:
     build: .
     container_name: rok-api
     restart: unless-stopped
     env_file: .env
+    environment:
+      DATABASE_URL: "postgres://postgres:postgres@postgres:5432/rok_api_dev"
     ports:
       - "3000:3000"
-    environment:
-      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/rok_api_dev"
-    networks:
-      - infra
+    depends_on:
+      postgres:
+        condition: service_healthy
 
-networks:
-  infra:
-    external: true
+  db-migrate:
+    build: .
+    container_name: rok-api-migrate
+    restart: no
+    entrypoint: ["./database/migrate.sh"]
+    environment:
+      DATABASE_URL: "postgres://postgres:postgres@postgres:5432/rok_api_dev"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

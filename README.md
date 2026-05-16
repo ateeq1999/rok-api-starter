@@ -16,35 +16,45 @@ Production-ready REST API starter built on the [rok](https://rok-rs.dev) ecosyst
 
 ## Quick start
 
-### 1. Database
-
-```bash
-# Start Postgres (or use your own)
-createdb rok_api_dev
-
-# Run migrations
-psql rok_api_dev < database/migrations/001_users.sql
-psql rok_api_dev < database/migrations/002_tokens.sql
-psql rok_api_dev < database/migrations/003_password_resets.sql
-```
-
-### 2. Environment
+### Option A — Docker (recommended)
 
 ```bash
 cp .env.example .env
-# Edit .env — at minimum set JWT_SECRET
+
+# Start Postgres + run migrations + boot the API
+make up
+make migrate
+
+# Or step by step:
+docker compose up -d postgres
+docker compose run --rm db-migrate
+docker compose up -d app
+
+# Tail logs
+make log
+
+# Stop everything
+make down
 ```
 
-### 3. Run
+### Option B — Local development
 
 ```bash
+# 1. Start Postgres (or use docker-compose for just the DB)
+docker compose up -d postgres
+
+# 2. Environment
+cp .env.example .env
+
+# 3. Apply migrations
+make migrate-dev
+# or: bash database/migrate.sh
+
+# 4. Run
 cargo run
 # Listening on http://0.0.0.0:3000
-```
 
-### 4. Test
-
-```bash
+# 5. Test
 cargo test
 ```
 
@@ -103,6 +113,25 @@ curl -s http://localhost:3000/auth/me \
 | `DATABASE_URL` | — | PostgreSQL connection string |
 | `DB_MAX_CONNECTIONS` | `10` | Connection pool size |
 | `JWT_SECRET` | — | JWT signing key |
+
+## Docker Compose services
+
+| Service | Image | Description |
+|---------|-------|-------------|
+| `postgres` | `postgres:16-alpine` | Database with persistent volume (`pgdata`) |
+| `app` | _built_ | The Axum API server |
+| `db-migrate` | _built_ | One-shot migration runner (exit after applying) |
+
+```bash
+# Available commands
+make up        # docker compose up -d
+make down      # docker compose down
+make build     # docker compose build app
+make migrate   # docker compose run --rm db-migrate
+make migrate-dev # Run migrations against local Postgres
+make log       # docker compose logs -f app
+make dev       # cargo run
+```
 
 ## Project structure
 
