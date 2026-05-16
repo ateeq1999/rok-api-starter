@@ -1464,7 +1464,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rok-api-test"
+name = "rok-api-starter"
 version = "0.1.0"
 dependencies = [
  "anyhow",
