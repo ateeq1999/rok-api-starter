@@ -24,6 +24,6 @@ COPY --from=builder /app/database ./database
 RUN chown -R appuser:appuser /app
 
 USER appuser
-ENV LISTEN_ADDR=0.0.0.0:3000
-EXPOSE 3000
+ENV LISTEN_ADDR=0.0.0.0:8080
+EXPOSE 8080
 ENTRYPOINT ["./rok-api-test"]

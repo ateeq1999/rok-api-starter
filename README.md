@@ -52,7 +52,7 @@ make migrate-dev
 
 # 4. Run
 cargo run
-# Listening on http://0.0.0.0:3000
+# Listening on http://0.0.0.0:8080
 
 # 5. Test
 cargo test
@@ -87,12 +87,12 @@ cargo test
 
 ```bash
 # Register
-curl -s http://localhost:3000/auth/register \
+curl -s http://localhost:8080/auth/register \
   -H 'Content-Type: application/json' \
   -d '{"email":"alice@example.com","password":"secret123","password_confirmation":"secret123"}' | jq
 
 # Login
-curl -s http://localhost:3000/auth/login \
+curl -s http://localhost:8080/auth/login \
   -H 'Content-Type: application/json' \
   -d '{"email":"alice@example.com","password":"secret123"}' | jq
 
@@ -100,7 +100,7 @@ curl -s http://localhost:3000/auth/login \
 TOKEN="eyJ..."
 
 # Profile
-curl -s http://localhost:3000/auth/me \
+curl -s http://localhost:8080/auth/me \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
@@ -109,7 +109,7 @@ curl -s http://localhost:3000/auth/me \
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `APP_NAME` | — | Application name |
-| `LISTEN_ADDR` | `0.0.0.0:3000` | Bind address |
+| `LISTEN_ADDR` | `0.0.0.0:8080` | Bind address |
 | `DATABASE_URL` | — | PostgreSQL connection string |
 | `DB_MAX_CONNECTIONS` | `10` | Connection pool size |
 | `JWT_SECRET` | — | JWT signing key |
