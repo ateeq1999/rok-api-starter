@@ -1,0 +1,33 @@
+[package]
+name = "rok-api-test"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "rok-api-test"
+path = "src/main.rs"
+
+[dependencies]
+axum         = "0.8"
+tokio        = { version = "1", features = ["full"] }
+tower-http   = { version = "0.6", features = ["trace", "cors"] }
+tower        = "0.5"
+serde        = { version = "1", features = ["derive"] }
+serde_json   = "1"
+sqlx         = { version = "0.8", default-features = false, features = [
+    "macros", "runtime-tokio-native-tls", "chrono", "postgres",
+] }
+chrono       = { version = "0.4", features = ["serde"] }
+uuid         = { version = "1", features = ["v4"] }
+dotenvy      = "0.15"
+anyhow       = "1"
+thiserror    = "2"
+rok-auth     = { version = "0.1", features = ["axum", "magic-link"] }
+rok-encrypt  = { version = "0.1" }
+rok-orm      = { version = "0.1", features = ["postgres", "axum"] }
+rok-validate = { version = "0.1", features = ["axum"] }
+rok-config   = { version = "0.1" }
+
+[dev-dependencies]
+rok-testing = { version = "0.1" }
+tokio       = { version = "1" }
