@@ -1,4 +1,5 @@
-use axum::{middleware, Router};
+use axum::Router;
+use rok_orm::OrmLayer;
 use sqlx::postgres::PgPoolOptions;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
@@ -26,11 +27,12 @@ async fn main() {
         .await
         .expect("failed to connect to database");
 
-    let state = AppState::new(pool, auth_cfg.jwt_secret);
+    let state = AppState::new(pool.clone(), auth_cfg.jwt_secret);
 
     let app = Router::new()
         .merge(auth_router())
         .merge(api_router())
+        .layer(OrmLayer::new(pool.clone()))
         .layer(TraceLayer::new_for_http())
         .layer(CorsLayer::permissive())
         .with_state(state);
